@@ -36,12 +36,14 @@ def ask_question(
         history_text
     )
 
-    print("\n==============================")
-    print("ORIGINAL QUESTION:")
-    print(question)
+    # For Debugging purpose only
 
-    print("\nREWRITTEN QUESTION:")
-    print(standalone_question)
+    # print("\n==============================")
+    # print("ORIGINAL QUESTION:")
+    # print(question)
+
+    # print("\nREWRITTEN QUESTION:")
+    # print(standalone_question)
 
     # -----------------------------
     # Retrieve Documents
@@ -50,22 +52,24 @@ def ask_question(
         standalone_question
     )
 
-    print("\nRETRIEVED DOCUMENTS:")
+    # FOR DEBUGGING PURPOSE ONLY
 
-    for i, doc in enumerate(
-        docs,
-        start=1
-    ):
-        print(
-            f"{i}. "
-            f"Source={doc.metadata.get('source')} "
-            f"Page={doc.metadata.get('page')}"
-        )
+    # print("\nRETRIEVED DOCUMENTS:")
 
-    print(
-        "\nRetrieved Docs Count:",
-        len(docs)
-    )
+    # for i, doc in enumerate(
+    #     docs,
+    #     start=1
+    # ):
+    #     print(
+    #         f"{i}. "
+    #         f"Source={doc.metadata.get('source')} "
+    #         f"Page={doc.metadata.get('page')}"
+    #     )
+
+    # print(
+    #     "\nRetrieved Docs Count:",
+    #     len(docs)
+    # )
 
     # -----------------------------
     # Build Context
@@ -172,16 +176,18 @@ Answer:
                 }
             )
 
-    print("\nUNIQUE SOURCES:")
+    # Debugging purpose only
 
-    for source in unique_sources:
-        print(
-            source["source"],
-            "| Page:",
-            source["page"]
-        )
+    # print("\nUNIQUE SOURCES:")
 
-    print("==============================\n")
+    # for source in unique_sources:
+    #     print(
+    #         source["source"],
+    #         "| Page:",
+    #         source["page"]
+    #     )
+
+    # print("==============================\n")
 
     # -----------------------------
     # API Response

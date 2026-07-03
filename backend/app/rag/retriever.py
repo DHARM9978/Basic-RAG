@@ -1,12 +1,8 @@
 from langchain_chroma import Chroma
+from app.rag.reranker import (rerank_documents)
+from app.rag.embeddings import (embedding_model)
+from app.rag.bm25 import (bm25_search)
 
-from app.rag.embeddings import (
-    embedding_model
-)
-
-from app.rag.bm25 import (
-    bm25_search
-)
 
 VECTOR_DB_PATH = "vectorstore"
 
@@ -54,61 +50,73 @@ def get_relevant_docs(
         question
     )
 
-    print(
-        "\n=== VECTOR SEARCH RESULTS ==="
-    )
+    # For Debugging purpose only
 
-    for doc in vector_docs:
+    # print(
+    #     "\n=== VECTOR SEARCH RESULTS ==="
+    # )
 
-        print(
-            doc.metadata.get(
-                "source"
-            ),
-            "| Page:",
-            doc.metadata.get(
-                "page"
-            )
-        )
+    # for doc in vector_docs:
+
+    #     print(
+    #         doc.metadata.get(
+    #             "source"
+    #         ),
+    #         "| Page:",
+    #         doc.metadata.get(
+    #             "page"
+    #         )
+    #     )
 
     bm25_docs = bm25_search(
         question
     )
 
-    print(
-        "\n=== BM25 SEARCH RESULTS ==="
-    )
+    # For debugging purpose only
 
-    for doc in bm25_docs:
+    # print(
+    #     "\n=== BM25 SEARCH RESULTS ==="
+    # )
 
-        print(
-            doc.metadata.get(
-                "source"
-            ),
-            "| Page:",
-            doc.metadata.get(
-                "page"
-            )
-        )
+    # for doc in bm25_docs:
+
+    #     print(
+    #         doc.metadata.get(
+    #             "source"
+    #         ),
+    #         "| Page:",
+    #         doc.metadata.get(
+    #             "page"
+    #         )
+    #     )
 
     merged_docs = merge_results(
         vector_docs,
         bm25_docs
     )
 
-    print(
-        "\n=== HYBRID RESULTS ==="
+    reranked_docs = rerank_documents(
+        question,
+        merged_docs,
+        top_k=5
     )
 
-    for doc in merged_docs:
+    # For debugging purpose only
 
-        print(
-            doc.metadata.get(
-                "source"
-            ),
-            "| Page:",
-            doc.metadata.get(
-                "page"
-            )
-        )
+    # print(
+    #     "\n=== RERANKED RESULTS ==="
+    # )
 
-    return merged_docs
+    # for doc in reranked_docs:
+
+    #     print(
+    #         doc.metadata.get(
+    #             "source"
+    #         ),
+    #         "| Page:",
+    #         doc.metadata.get(
+    #             "page"
+    #         )
+    #     )
+
+    return reranked_docs
