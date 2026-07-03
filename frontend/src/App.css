@@ -1,0 +1,502 @@
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: #212121;
+  color: #ececec;
+  overflow: hidden;
+}
+
+/* =====================================================
+   APP LAYOUT
+===================================================== */
+
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: #171717;
+  border-right: 1px solid #2f2f2f;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 12px;
+
+  overflow: hidden;
+}
+
+.sidebar-top {
+  margin-bottom: 16px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #2f2f2f;
+}
+
+/* =====================================================
+   UPLOAD BUTTON
+===================================================== */
+
+.upload-box {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 12px;
+
+  padding: 14px;
+
+  cursor: pointer;
+  transition: 0.2s;
+
+  text-align: center;
+}
+
+.upload-box:hover {
+  background: #323232;
+}
+
+.upload-box h3 {
+  font-size: 15px;
+  color: #ececec;
+}
+
+.upload-box p {
+  margin-top: 6px;
+  color: #a0a0a0;
+  font-size: 13px;
+}
+
+.upload-box input {
+  display: none;
+}
+
+/* =====================================================
+   DOCUMENTS
+===================================================== */
+
+.documents-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 16px;
+
+  scrollbar-gutter: stable;
+}
+
+.documents-list h3 {
+  color: #a0a0a0;
+  font-size: 13px;
+  margin-bottom: 10px;
+  padding-left: 8px;
+}
+
+.empty-documents {
+  color: #888;
+  font-size: 14px;
+  padding: 10px;
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  position: relative;
+
+  transition: 0.2s;
+}
+
+.document-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.document-name {
+  flex: 1;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  text-align: left;
+
+  color: #ececec;
+  font-size: 14px;
+}
+
+.menu-btn {
+  opacity: 0;
+
+  background: transparent;
+  border: none;
+
+  color: #9ca3af;
+
+  cursor: pointer;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.2s ease;
+}
+
+.document-item:hover .menu-btn {
+  opacity: 1;
+}
+
+.menu-btn:hover {
+  background: #323232;
+  color: white;
+}
+
+.menu-container {
+  position: relative;
+}
+
+.document-actions {
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.document-item:hover .document-actions {
+  opacity: 1;
+}
+
+.dropdown-menu {
+  position: absolute;
+
+  top: 0;
+  right: 35px;
+
+  background: #2b2b2b;
+  border: 1px solid #444;
+  border-radius: 8px;
+
+  min-width: 120px;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+
+  z-index: 999;
+}
+
+.delete-option {
+  width: 100%;
+
+  background: transparent;
+
+  border: none;
+
+  color: #ef4444;
+
+  padding: 10px;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.delete-option:hover {
+  background: #3a3a3a;
+}
+
+
+/* =====================================================
+   MAIN CONTENT
+===================================================== */
+
+.main-content {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  background: #212121;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.chat-header {
+  padding: 18px 24px;
+
+  border-bottom: 1px solid #2f2f2f;
+
+  background: #212121;
+}
+
+.chat-header h1 {
+  font-size: 22px;
+  color: #ececec;
+}
+
+.chat-header p {
+  margin-top: 4px;
+  color: #9ca3af;
+}
+
+/* =====================================================
+   CHAT WINDOW
+===================================================== */
+
+.chat-window {
+  flex: 1;
+
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 24px;
+}
+
+.empty-chat {
+  margin: auto;
+  text-align: center;
+}
+
+.empty-chat h2 {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.empty-chat p {
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+/* =====================================================
+   SUGGESTIONS
+===================================================== */
+
+.suggestions {
+  margin-top: 40px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 280px);
+
+  gap: 12px;
+
+  justify-content: center;
+}
+
+.suggestion-card {
+  background: #2a2a2a;
+
+  border: 1px solid #3a3a3a;
+
+  border-radius: 12px;
+
+  padding: 16px;
+
+  color: #ececec;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.suggestion-card:hover {
+  background: #323232;
+}
+
+/* =====================================================
+   MESSAGES
+===================================================== */
+
+.message-row {
+  width: 100%;
+
+  display: flex;
+
+  margin-bottom: 28px;
+}
+
+.user-row {
+  justify-content: flex-end;
+}
+
+.assistant-row {
+  justify-content: flex-start;
+}
+
+.message {
+  max-width: 850px;
+
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.user-message {
+  background: #303030;
+
+  padding: 14px 18px;
+
+  border-radius: 18px;
+
+  color: white;
+}
+
+.ai-message {
+  color: #ececec;
+}
+
+/* =====================================================
+   SOURCE CARD
+===================================================== */
+
+.source-card {
+  margin-top: 18px;
+
+  padding-top: 12px;
+
+  border-top: 1px solid #3a3a3a;
+}
+
+.source-card h4 {
+  margin-bottom: 10px;
+  color: #ececec;
+}
+
+.source-item {
+  color: #9ca3af;
+  margin-bottom: 6px;
+}
+
+/* =====================================================
+   CHAT INPUT
+===================================================== */
+
+.chat-input {
+  padding: 18px;
+
+  background: #212121;
+
+  border-top: 1px solid #2f2f2f;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-input input {
+  flex: 1;
+
+  height: 52px;
+
+  background: #2a2a2a;
+
+  border: 1px solid #3a3a3a;
+
+  color: white;
+
+  border-radius: 28px;
+
+  padding: 0 18px;
+
+  font-size: 15px;
+
+  outline: none;
+}
+
+.chat-input input:focus {
+  border-color: #5e5e5e;
+}
+
+.chat-input button {
+  width: 52px;
+  height: 52px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  color: #000000;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.chat-input button:hover {
+  transform: scale(1.05);
+}
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #171717;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+
+  .message {
+    max-width: 95%;
+  }
+
+  .suggestions {
+    grid-template-columns: 1fr;
+  }
+}

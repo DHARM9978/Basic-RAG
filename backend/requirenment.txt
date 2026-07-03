@@ -1,0 +1,28 @@
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+
+langchain
+langchain-community
+langchain-core
+
+pip install langchain-chroma
+pip install chromadb
+pip install langchain-openai
+
+langchain-openai
+
+chromadb
+
+pypdf
+
+sentence-transformers
+
+tiktoken
+
+pydantic
+
+numpy
+
+pandas
