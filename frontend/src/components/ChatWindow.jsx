@@ -46,9 +46,8 @@ function ChatWindow({ messages }) {
               <MessageBubble
                 key={index}
                 role={message.role}
-                content={
-                  message.content
-                }
+                content={message.content}
+                sources={message.sources}
               />
             )
           )}

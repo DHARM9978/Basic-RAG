@@ -5,9 +5,20 @@ def load_pdf(pdf_path: str):
 
     reader = PdfReader(pdf_path)
 
-    text = ""
+    pages = []
 
-    for page in reader.pages:
-        text += page.extract_text() + "\n"
+    for page_num, page in enumerate(
+        reader.pages,
+        start=1
+    ):
 
-    return text
+        text = page.extract_text()
+
+        if text:
+
+            pages.append({
+                "page": page_num,
+                "text": text
+            })
+
+    return pages

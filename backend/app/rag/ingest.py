@@ -8,7 +8,7 @@ def ingest_chunks(chunks, filename):
 
     documents = [
         Document(
-            page_content=chunk,
+            page_content=chunk["content"],
             metadata={
                 "source": filename,
                 "page": chunk["page"],

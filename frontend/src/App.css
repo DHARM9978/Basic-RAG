@@ -500,3 +500,42 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+
+.message {
+  text-align: left;
+}
+
+.ai-message {
+  text-align: left;
+}
+
+.user-message {
+  text-align: left;
+}
+
+.source-card {
+  margin-top: 12px;
+  text-align: left;
+}
+
+.source-item {
+  margin-top: 6px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.ai-message {
+  max-width: 800px;
+}
+
+.user-message {
+  max-width: 500px;
+  margin-left: auto;
+}
+
+.source-card {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #333;
+}

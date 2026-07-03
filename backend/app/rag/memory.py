@@ -15,6 +15,11 @@ def add_message(session_id, role, content):
         "content": content
     })
 
+    # Keep only latest 20 messages
+    chat_sessions[session_id] = (
+        chat_sessions[session_id][-20:]
+    )
+
 
 def clear_history(session_id):
     chat_sessions.pop(session_id, None)

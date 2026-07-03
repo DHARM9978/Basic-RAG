@@ -3,6 +3,7 @@ import SourceCard from "./SourceCard";
 function MessageBubble({
   role,
   content,
+  sources,
 }) {
   const isUser =
     role === "user";
@@ -31,7 +32,7 @@ function MessageBubble({
         <p>{content}</p>
 
         {!isUser && (
-          <SourceCard />
+          <SourceCard sources={sources} />
         )}
       </div>
 
