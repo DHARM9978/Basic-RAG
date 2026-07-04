@@ -8,7 +8,8 @@ from app.rag.memory import (get_history,add_message)
 from app.rag.loader import load_pdf
 from app.rag.chunker import split_text
 from app.rag.ingest import ingest_chunks
-from app.rag.chain import ask_question
+from app.rag.chain import (ask_question,stream_question)
+from fastapi.responses import StreamingResponse
 from app.rag.vectorstore import get_vectorstore
 
 
@@ -181,3 +182,16 @@ async def query(request: ChatRequest):
     )
 
     return response
+
+@app.post("/query-stream")
+async def query_stream(
+    request: ChatRequest
+):
+
+    return StreamingResponse(
+        stream_question(
+            question=request.message,
+            session_id=request.session_id
+        ),
+        media_type="text/plain"
+    )

@@ -9,10 +9,14 @@ from app.rag.query_rewriter import (
 )
 
 
-def ask_question(
+def prepare_rag_data(
     question: str,
     session_id: str
 ):
+    """
+    Shared retrieval pipeline used by both
+    normal and streaming responses.
+    """
 
     # -----------------------------
     # Conversation History
@@ -29,21 +33,12 @@ def ask_question(
     )
 
     # -----------------------------
-    # Rewrite Follow-up Question
+    # Rewrite Question
     # -----------------------------
     standalone_question = rewrite_question(
         question,
         history_text
     )
-
-    # For Debugging purpose only
-
-    # print("\n==============================")
-    # print("ORIGINAL QUESTION:")
-    # print(question)
-
-    # print("\nREWRITTEN QUESTION:")
-    # print(standalone_question)
 
     # -----------------------------
     # Retrieve Documents
@@ -51,25 +46,6 @@ def ask_question(
     docs = get_relevant_docs(
         standalone_question
     )
-
-    # FOR DEBUGGING PURPOSE ONLY
-
-    # print("\nRETRIEVED DOCUMENTS:")
-
-    # for i, doc in enumerate(
-    #     docs,
-    #     start=1
-    # ):
-    #     print(
-    #         f"{i}. "
-    #         f"Source={doc.metadata.get('source')} "
-    #         f"Page={doc.metadata.get('page')}"
-    #     )
-
-    # print(
-    #     "\nRetrieved Docs Count:",
-    #     len(docs)
-    # )
 
     # -----------------------------
     # Build Context
@@ -99,51 +75,26 @@ Current Question:
 
 Rules:
 
-1. Use conversation history only to resolve references such as:
-   - it
-   - they
-   - this
-   - that
+1. Use conversation history only to resolve references.
 
 2. Do NOT mention conversation history.
 
 3. Do NOT say:
-   - According to the conversation history
+   - According to conversation history
    - Based on previous messages
-   - From the context above
 
-4. Answer directly and concisely.
+4. Answer directly.
 
-5. Use only information from the provided context.
+5. Use only information from context.
 
-6. If the answer is not found, say:
+6. If answer is unavailable, say:
    "I could not find that information in the document."
 
 Answer:
 """
 
     # -----------------------------
-    # Generate Answer
-    # -----------------------------
-    response = llm.invoke(prompt)
-
-    # -----------------------------
-    # Save Chat History
-    # -----------------------------
-    add_message(
-        session_id,
-        "user",
-        question
-    )
-
-    add_message(
-        session_id,
-        "assistant",
-        response.content
-    )
-
-    # -----------------------------
-    # Remove Duplicate Sources
+    # Unique Sources
     # -----------------------------
     unique_sources = []
     seen = set()
@@ -176,23 +127,87 @@ Answer:
                 }
             )
 
-    # Debugging purpose only
+    return {
+        "prompt": prompt,
+        "sources": unique_sources,
+        "question": question
+    }
 
-    # print("\nUNIQUE SOURCES:")
 
-    # for source in unique_sources:
-    #     print(
-    #         source["source"],
-    #         "| Page:",
-    #         source["page"]
-    #     )
+# =====================================
+# Normal Response
+# =====================================
 
-    # print("==============================\n")
+def ask_question(
+    question: str,
+    session_id: str
+):
 
-    # -----------------------------
-    # API Response
-    # -----------------------------
+    rag_data = prepare_rag_data(
+        question,
+        session_id
+    )
+
+    response = llm.invoke(
+        rag_data["prompt"]
+    )
+
+    # Save Memory
+
+    add_message(
+        session_id,
+        "user",
+        question
+    )
+
+    add_message(
+        session_id,
+        "assistant",
+        response.content
+    )
+
     return {
         "answer": response.content,
-        "sources": unique_sources
+        "sources": rag_data["sources"]
     }
+
+
+# =====================================
+# Streaming Response
+# =====================================
+
+def stream_question(
+    question: str,
+    session_id: str
+):
+
+    rag_data = prepare_rag_data(
+        question,
+        session_id
+    )
+
+    full_answer = ""
+
+    for chunk in llm.stream(
+        rag_data["prompt"]
+    ):
+
+        if chunk.content:
+
+            full_answer += chunk.content
+
+            yield chunk.content
+
+    # Save Memory After Streaming Completes
+
+    add_message(
+        session_id,
+        "user",
+        question
+    )
+
+    add_message(
+        session_id,
+        "assistant",
+        full_answer
+    )

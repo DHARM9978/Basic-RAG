@@ -1,17 +1,12 @@
 import { Send } from "lucide-react";
 import { useState } from "react";
-import API from "../api/api";
-
-
+import { askQuestionStream } from "../api/api";
 
 function ChatInput({
   messages,
   setMessages,
 }) {
-
-
   const sessionId = "user-session-1";
-
 
   const [question, setQuestion] =
     useState("");
@@ -19,13 +14,13 @@ function ChatInput({
   const [loading, setLoading] =
     useState(false);
 
-
   const handleSend = async () => {
     if (
       !question.trim() ||
       loading
-    )
+    ) {
       return;
+    }
 
     const currentQuestion =
       question;
@@ -38,6 +33,11 @@ function ChatInput({
     setMessages((prev) => [
       ...prev,
       userMessage,
+      {
+        role: "assistant",
+        content: "",
+        sources: [],
+      },
     ]);
 
     setQuestion("");
@@ -45,38 +45,44 @@ function ChatInput({
     try {
       setLoading(true);
 
-      const response =
-        await API.post("/query", {
-          session_id: sessionId,
-          message: currentQuestion,
-        });
+      await askQuestionStream(
+        sessionId,
+        currentQuestion,
+        (partialText) => {
+          setMessages((prev) => {
+            const updated = [...prev];
 
-      const botMessage = {
-        role: "assistant",
-        content:
-          response.data.answer ||
-          "No response received.",
-        sources:
-          response.data.sources ||
-          [],
-      };
+            updated[
+              updated.length - 1
+            ] = {
+              ...updated[
+                updated.length - 1
+              ],
+              content:
+                partialText,
+            };
 
-      setMessages((prev) => [
-        ...prev,
-        botMessage,
-      ]);
+            return updated;
+          });
+        }
+      );
     } catch (error) {
       console.error(error);
 
-      setMessages((prev) => [
-        ...prev,
-        {
+      setMessages((prev) => {
+        const updated = [...prev];
+
+        updated[
+          updated.length - 1
+        ] = {
           role: "assistant",
           content:
             "❌ Error communicating with server.",
           sources: [],
-        },
-      ]);
+        };
+
+        return updated;
+      });
     } finally {
       setLoading(false);
     }
@@ -85,7 +91,11 @@ function ChatInput({
   const handleKeyDown = (
     e
   ) => {
-    if (e.key === "Enter") {
+    if (
+      e.key === "Enter" &&
+      !e.shiftKey
+    ) {
+      e.preventDefault();
       handleSend();
     }
   };
@@ -104,11 +114,15 @@ function ChatInput({
         onKeyDown={
           handleKeyDown
         }
+        disabled={loading}
       />
 
       <button
         onClick={handleSend}
-        disabled={loading}
+        disabled={
+          loading ||
+          !question.trim()
+        }
       >
         {loading ? (
           "..."
